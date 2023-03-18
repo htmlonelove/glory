@@ -1,6 +1,9 @@
 # glory
 ![GitHub manifest version (path)][def] ![GitHub repo size][def2] ![GitHub followers][def3]
-## Данное расширение создано в помощь тестированию вёрстки в браузере.
+## Описание
+Данное расширение создано в помощь тестированию вёрстки в браузере.
+## Установка
+## Использование
 
 
 [def]: https://img.shields.io/github/manifest-json/v/htmlonelove/glory
