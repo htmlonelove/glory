@@ -22,13 +22,15 @@ const initGlory = () => {
   .ts-panel {
     position: fixed;
     bottom: 20px;
-    left: 20px;
+    left: 50%;
     padding: 10px 10px 0;
     background-color: rgba(0, 160, 223, 0.5);
     border-radius: 3px;
     z-index: 999999999999;
 
-    max-width: 70%;
+    width: calc(100% - 40px);
+    max-width: 1200px;
+    transform: translateX(-50%);
 
     transition: all 0.3s ease;
   }
@@ -57,7 +59,7 @@ const initGlory = () => {
   }
 
   .ts-console {
-    position: fixed;
+    width: 100%;
     padding: 10px;
     border-radius: 3px;
     background-color: rgba(0, 160, 223, 0.8);
@@ -65,10 +67,10 @@ const initGlory = () => {
     left: 20px;
     color: #fff;
     width: 100%;
-    max-width: 900px;
     min-width: 300px;
     white-space: pre;
     font-family: monospace;
+    margin-bottom: 20px;
 
     max-height: 80vh;
     overflow-y: scroll;
@@ -99,7 +101,8 @@ const initGlory = () => {
     display: none;
   }`;
 
-  const textNodes = [...getTextNodesIn(document.body)];
+  let textNodes = [...getTextNodesIn(document.body)];
+  const domClone = document.body.cloneNode(true);
   const styles = document.createElement('style');
   styles.innerHTML = css;
   document.head.appendChild(styles);
@@ -107,6 +110,11 @@ const initGlory = () => {
   // создание панели
   const panel = document.createElement('div');
   panel.classList = 'ts-panel';
+
+  // консоль
+  const con = document.createElement('div');
+  con.classList = 'ts-console';
+  panel.appendChild(con);
 
   // кнопка для переполнения текстом
   const moreText = document.createElement('button');
@@ -185,6 +193,13 @@ const initGlory = () => {
   href.classList = 'ts-btn ts-btn--href';
   panel.appendChild(href);
 
+  // кнопка для сброса изменений
+  const resetButton = document.createElement('button');
+  resetButton.type = 'button';
+  resetButton.textContent = 'сброс изменений';
+  resetButton.classList = 'ts-btn ts-btn--href';
+  panel.appendChild(resetButton);
+
   // кнопка для скрытия панели
   const hide = document.createElement('button');
   hide.type = 'button';
@@ -192,14 +207,20 @@ const initGlory = () => {
   hide.classList = 'ts-btn ts-btn--hide';
   panel.appendChild(hide);
 
-  // консоль
-  const con = document.createElement('div');
-  con.classList = 'ts-console';
-  panel.appendChild(con);
-
   // вставка панели в страницу
-  const body = document.body;
-  body.appendChild(panel);
+  document.body.appendChild(panel);
+
+  // сброс изменений
+  resetButton.onclick = () => {
+    document.body.innerHTML = domClone.innerHTML;
+    textNodes = [...getTextNodesIn(document.body)];
+    setTimeout(() => {
+      document.body.appendChild(panel);
+      moreList.textContent = 'проверить переполнение списков';
+      moreText.textContent = 'проверить переполнение текстом';
+      con.innerHTML = '';
+    });
+  };
 
   // переполнение контентом
   moreText.onclick = () => {
@@ -263,13 +284,16 @@ const initGlory = () => {
 
   // удаление контентных изображений
   contentImageRemove.onclick = () => {
-    const images = document.querySelectorAll('img');
+    const images = document.querySelectorAll('img, source');
     images.forEach((image) => {
       if (image.src) {
         image.src = '';
       }
       if (image.srcset) {
         image.srcset = '';
+      }
+      if (image.dataset.src) {
+        image.dataset.src = '';
       }
     });
   };
@@ -323,7 +347,7 @@ const initGlory = () => {
 
   imageInfo.onclick = () => {
     const images = [...document.querySelectorAll('img')];
-    
+
     if (images.length) {
       let pictureCount = 0;
       let mediaCount = 0;
@@ -368,8 +392,6 @@ const initGlory = () => {
             child.remove();
           });
 
-          image.src = '';
-          image.srcset = '';
         } else {
           if (image.srcset !== '') {
             retinaCount++;
