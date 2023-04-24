@@ -237,7 +237,7 @@ const initGlory = () => {
   };
 
   moreList.onclick = () => {
-    const listNodes = [...document.body.querySelectorAll('ul')];
+    const listNodes = [...document.body.querySelectorAll('ul, ol, dl')];
     listNodes.forEach((list) => {
       const children = [...list.childNodes];
       children.forEach((child) => {
@@ -446,6 +446,7 @@ const initGlory = () => {
     let hrefEmptyCount = 0;
     let btnCount = 0;
     let btnTypeCount = 0;
+    let btnWithoutType = [];
 
     a.forEach((item) => {
       hrefCount++;
@@ -456,6 +457,7 @@ const initGlory = () => {
 
     b.forEach((item) => {
       if (!item.classList.contains('ts-btn')) {
+
         btnCount++;
         if (!item.textContent) {
           con.textContent = con.textContent + 'Контент кнопки: пустая.' + item.classList + '\r\n';
@@ -463,8 +465,9 @@ const initGlory = () => {
           con.textContent = con.textContent + 'Контент кнопки: ' + item.innerText + '\r\n';
         }
 
-        if (!item.type) {
+        if (!item.getAttribute('type')) {
           btnTypeCount++;
+          btnWithoutType.push('У кнопки с классами: ' + item.classList + ' не указан тип ' + '\r\n');
         }
       }
     });
@@ -472,6 +475,6 @@ const initGlory = () => {
     con.textContent = con.textContent + 'Количество ссылок ' + hrefCount + '\r\n';
     con.textContent = con.textContent + 'Количество пустых ссылок ' + hrefEmptyCount + '\r\n';
     con.textContent = con.textContent + 'Количество кнопок ' + btnCount + '\r\n';
-    con.textContent = con.textContent + 'Количество кнопок без типа  ' + btnTypeCount + '\r\n';
+    con.textContent = con.textContent + 'Количество кнопок без типа  ' + btnTypeCount + '\r\n' + btnWithoutType.join('');
   };
 };
